@@ -4,7 +4,8 @@ This repository contains the official implementation and evaluation framework fo
 
 **"Can Large Language Models Understand the Semantics of Intermediate Representation Code?"**
 
-[\[Paper Link\]]([https://arxiv.org/abs/2502.06854]) | [\[Poster\]](./figures/poster.pdf)
+**[📄 Paper Link](https://arxiv.org/abs/2502.06854)** | **[🖼️ Poster](./figures/poster.pdf)**
+
 
 ---
 
