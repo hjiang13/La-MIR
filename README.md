@@ -1,4 +1,4 @@
-# La-MIR: 'La'rge 'La'nguage 'M'odels for 'I'ntermediate 'R'epresentation
+# La-MIR: `La`rge `La`nguage `M`odels for `I`ntermediate `R`epresentation
 
 This repository contains the official implementation and evaluation framework for the ICML 2025 paper:
 
