@@ -91,10 +91,10 @@ This project is licensed under the [MIT License](LICENSE).
 ## 🙋 Citation
 
 ```bibtex
-@inproceedings{jiang2025lamir,
-  title={Can Large Language Models Understand the Semantics of Intermediate Representation Code?},
-  author={Jiang, Hailong and et al.},
-  booktitle={International Conference on Machine Learning (ICML)},
+@article{jiang2025LaMIR,
+  title={Can Large Language Models Understand Intermediate Representations?},
+  author={Jiang, Hailong and Zhu, Jianfeng and Wan, Yao and Fang, Bo and Zhang, Hongyu and Jin, Ruoming and Guan, Qiang},
+  journal={arXiv preprint arXiv:2502.06854},
   year={2025}
 }
 ```
