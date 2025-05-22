@@ -14,8 +14,8 @@ This repository contains the official implementation and evaluation framework fo
 La-MIR is a benchmarking framework to evaluate and analyze the ability of LLMs to understand compiler **Intermediate Representation (IR)**. It includes multiple tasks reflecting different levels of semantic understanding:
 
 * **CFG Reconstruction**
-* **Call Graph Prediction**
-* **Data Dependence Graph (DDG) Analysis**
+* **IR Decompilation**
+* **Code Summarization**
 * **Execution Reasoning**
 
 The project provides all necessary IR datasets, task prompts, expected outputs, baseline results, and analysis tools.
