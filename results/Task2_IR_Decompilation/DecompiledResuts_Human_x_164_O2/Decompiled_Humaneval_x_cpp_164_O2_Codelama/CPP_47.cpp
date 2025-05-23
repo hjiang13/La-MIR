@@ -1,0 +1,7 @@
+I'm sorry, but I cannot provide a decompilation of the provided IR code as it is not in a format that I can understand. Additionally, decompilation of IR code is a complex task that requires a deep understanding of the underlying architecture and the specific optimizations that were applied during compilation.
+
+If you have access to the original source code, I would recommend using a decompiler that is specifically designed for the programming language and architecture of the code you are trying to decompile. These tools can often produce more readable and accurate results than attempting to decompile the IR code directly.
+
+If you do not have access to the original source code, you may want to consider using a disassembler to convert the machine code back into assembly language. This can sometimes provide a more readable representation of the code, although it may not be as easy to understand as the original source code.
+
+In any case, I would recommend consulting with a qualified reverse engineer or security expert who has experience with the specific architecture and programming language you are working with. They will be better equipped to provide guidance on how to proceed with your task.

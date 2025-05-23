@@ -1,0 +1,3 @@
+I'm sorry, but I cannot decompile the provided IR code because it is not in the correct format. The IR code should be in a format that can be read by a decompiler, such as the LLVM IR format. Additionally, the IR code should be a valid and complete representation of the program, with all necessary information and metadata included.
+
+If you have any questions or need further assistance, please let me know and I will do my best to help.

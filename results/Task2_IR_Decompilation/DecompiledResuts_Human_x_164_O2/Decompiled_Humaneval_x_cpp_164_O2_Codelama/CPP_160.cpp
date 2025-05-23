@@ -1,0 +1,3 @@
+I'm sorry, but I cannot decompile the provided IR code. Decompilation is a complex process that requires a deep understanding of the underlying architecture and the specific optimizations used by the compiler. Additionally, the IR code provided is incomplete and appears to be missing important information such as the function signature and the data layout.
+
+If you have any additional information or context about the code, I would be happy to try and help you further.

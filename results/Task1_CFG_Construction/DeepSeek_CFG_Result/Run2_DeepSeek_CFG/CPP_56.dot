@@ -1,0 +1,78 @@
+<think>
+Okay, I'm trying to figure out how to create a control flow graph (CFG) from the given IR code. I'm a bit new to this, so I'll take it step by step.
+
+First, I remember that a CFG represents the flow of a program's execution, with nodes as basic blocks and edges as jumps between them. Each basic block contains a sequence of instructions that are executed in order without any control flow changes except at the end.
+
+Looking at the IR code, I see it's in LLVM format. The function is `_Z18correct_bracketing...` which seems to be a function that checks bracketing in a string. The code has labels like 1, 5, 8, 10, 23, 25, which are the basic blocks.
+
+I'll list each label as a node. Now, I need to determine the edges between these nodes based on the branch instructions.
+
+Starting from label 1, the first instruction is a `br` to label 25 if `%4` is true, else to label 5. So, node 1 has edges to 25 and 5.
+
+Next, label 5 starts a loop. It has a `br` to label 10, so node 5 points to 10.
+
+Label 10 is a loop body. It has a `br` to label 8 if some condition, else continues the loop. Wait, looking closer, label 10 is a phi node, so it's the start of the loop. The `br` at the end goes back to label 8, which is part of the loop.
+
+Wait, no, label 8 is inside the loop. Let me see: label 8 has a `br` to label 23 if `%9` is true, else back to label 10. So node 8 has edges to 23 and 10.
+
+Label 23 then branches to 25 based on `%24`. So node 23 points to 25.
+
+Label 10, after some computations, has a `br` to label 25 if `%21` is true, else back to label 8. So node 10 has edges to 25 and 8.
+
+Finally, label 25 is the exit point, returning a value.
+
+Putting it all together:
+
+- Node 1 branches to 25 and 5.
+- Node 5 goes to 10.
+- Node 10 goes to 25 and 8.
+- Node 8 goes to 23 and 10.
+- Node 23 goes to 25.
+
+Wait, but in the initial analysis, I might have missed that node 10 can loop back to itself via node 8. Also, node 25 is the termination point.
+
+I think that's the basic structure. I'll represent this in a dot file with nodes and edges as described.
+</think>
+
+To create the control flow graph (CFG) from the provided IR code, we identify the basic blocks and their control flow transitions. Here's the structured representation:
+
+### Control Flow Graph (CFG)
+
+```dot
+digraph CFG {
+    node [shape=box, style=filled];
+
+    "1" [label="1"];
+    "5" [label="5"];
+    "8" [label="8"];
+    "10" [label="10"];
+    "23" [label="23"];
+    "25" [label="25"];
+
+    "1" -> "25" [label="cond"];
+    "1" -> "5" [label="cond"];
+
+    "5" -> "10";
+
+    "10" -> "25" [label="cond"];
+    "10" -> "8" [label=""];
+
+    "8" -> "23" [label="cond"];
+    "8" -> "10" [label=""];
+
+    "23" -> "25";
+}
+```
+
+### Explanation
+
+1. **Nodes**: Each node represents a basic block in the IR code, labeled as per their appearance in the code (1, 5, 8, 10, 23, 25).
+
+2. **Edges**: Edges represent control flow between blocks.
+   - Block 1 branches to 25 and 5 based on a condition.
+   - Block 5 proceeds to block 10.
+   - Block 10 may exit to 25 or loop back via block 8.
+   - Block 8 checks a condition to either proceed to 23 or continue the loop.
+   - Block 23 exits to 25.
+
+This graph visualizes the program's execution flow, showing how control moves between different code segments.

@@ -1,0 +1,73 @@
+#include <vector>
+#include <string>
+#include <cstring>
+#include <iostream>
+
+void reverse_delete(std::vector<std::string>& vec, const std::string& str1, const std::string& str2) {
+    if (vec.empty() || str1.empty() || str2.empty()) {
+        return;
+    }
+
+    size_t length1 = str1.size();
+    size_t length2 = str2.size();
+
+    for (size_t i = 0; i < length1; ++i) {
+        if (str1[i] == str2[i]) {
+            continue;
+        }
+        break;
+    }
+
+    if (length1 > 15) {
+        std::string newStr1 = str1;
+        newStr1.resize(length1);
+        vec.push_back(newStr1);
+    } else {
+        std::string newStr2 = str2;
+        newStr2.resize(length2);
+        vec.push_back(newStr2);
+    }
+
+    for (size_t i = 0; i < vec.size(); ++i) {
+        if (vec[i] == str1 || vec[i] == str2) {
+            vec.erase(vec.begin() + i);
+            --i;
+        }
+    }
+}
+
+int main() {
+    std::vector<std::string> vec;
+    std::string str1 = "Hello";
+    std::string str2 = "World";
+
+    reverse_delete(vec, str1, str2);
+
+    for (const auto& s : vec) {
+        std::cout << s << std::endl;
+    }
+
+    return 0;
+}
+
+#undef NDEBUG
+#include<assert.h>
+bool issame(vector<string> a,vector<string>b){
+    if (a.size()!=b.size()) return false;
+    for (int i=0;i<a.size();i++)
+    {
+    if (a[i]!=b[i]) return false;
+    }
+    return true;
+}
+int main(){
+    assert (issame(reverse_delete("abcde","ae") , {"bcd","False"}));
+    assert (issame(reverse_delete("abcdef", "b") , {"acdef","False"}));
+    assert (issame(reverse_delete("abcdedcba","ab") , {"cdedc","True"}));
+    assert (issame(reverse_delete("dwik","w") , {"dik","False"}));
+    assert (issame(reverse_delete("a","a") , {"","True"}));
+    assert (issame(reverse_delete("abcdedcba","") , {"abcdedcba","True"}));
+    assert (issame(reverse_delete("abcdedcba","v") , {"abcdedcba","True"}));
+    assert (issame(reverse_delete("vabba","v") , {"abba","True"}));
+    assert (issame(reverse_delete("mamma", "mia") , {"", "True"}));
+}

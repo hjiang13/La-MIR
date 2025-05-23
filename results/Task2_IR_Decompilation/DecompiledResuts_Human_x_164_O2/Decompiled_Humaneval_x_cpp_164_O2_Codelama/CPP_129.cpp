@@ -1,0 +1,3 @@
+I'm sorry, but I cannot decompile the provided IR code as it is not in a format that I can understand. The IR code is not in a standard format, and it appears to be missing important information such as the function signature and the data types of the variables.
+
+If you could provide me with the IR code in a standard format, such as the LLVM IR format, I would be happy to try and decompile it for you.

@@ -1,0 +1,98 @@
+<think>
+Okay, so I'm trying to figure out how to create a control flow graph (CFG) from the given IR code. I'm not super familiar with IR, but I know that a CFG represents the flow of a program's execution, showing the different basic blocks and how they connect.
+
+First, I need to understand the structure of the IR code provided. It looks like it's in LLVM IR format. The function is called _Z23mean_absolute_deviationSt6vectorIfSaIfEE, which I think is the mangled name for a function related to mean absolute deviation. The function takes a vector of floats as input.
+
+Looking through the code, I can see several labels like 1, 11, 13, etc. Each of these labels represents the start of a basic block. A basic block is a sequence of instructions that are executed in order without any branches or jumps.
+
+I need to identify each basic block and the branches that connect them. Let's go step by step.
+
+1. The function starts at label 1. The first few instructions load pointers from the vector. Then there's a subtraction and some bitwise operations, followed by a branch to either label 11 or 13 based on whether the result is zero.
+
+2. Label 11 seems to handle the case where the vector has zero elements or maybe just one. It converts the integer result to a float and branches to label 129.
+
+3. Label 13 is where the more complex logic starts. Here, the code calculates the number of elements and then seems to handle cases where the vector size isn't a multiple of 8, using some loop unrolling or vectorization.
+
+4. From label 13, there's a branch to either label 58 or 18. It looks like it's checking if the loop should run or not.
+
+5. Label 18 starts a loop that processes the vector elements in chunks of 8. It uses several phi nodes to keep track of loop variables. Each iteration loads four pairs of elements, adds them up, and accumulates the sum. After processing eight elements, it checks if it's done and either continues the loop or exits to label 58.
+
+6. Label 58 seems to handle the remainder when the vector size isn't a multiple of 8. It processes the remaining elements one by one in a loop, adding each to the sum.
+
+7. After processing all elements, the function calculates the mean by dividing the total by the number of elements. Then it branches to label 129.
+
+8. Label 129 is where the final result is computed and returned.
+
+Wait, I might have missed some parts. Let me go through it again.
+
+From label 13, after the initial setup, it branches to label 58 if the size is less than 8, otherwise to label 18. Label 18 is the main loop processing 8 elements at a time. Each iteration updates the loop variables and checks if more elements are left. If not, it moves to label 58 to handle any remaining elements.
+
+Label 58 processes the remaining elements in a loop until all are done, then moves to label 73. Label 73 computes the mean and decides whether to return immediately or process more elements.
+
+Wait, in the original analysis, label 73 was part of the process, but I think I need to map each label correctly.
+
+I also notice that after label 73, there's a branch to label 77, which handles cases where the vector size requires additional processing beyond the initial 8-element blocks. This might involve more loops or checks.
+
+In any case, each label represents a node in the CFG, and the branches (br instructions) represent edges between these nodes.
+
+So, to create the CFG, I'll list each label as a node and draw edges based on where each branch goes.
+
+I think I've got a rough idea. Now, I'll outline the nodes and their connections based on the branches in the code.
+</think>
+
+To create the control flow graph (CFG) for the given IR code, we identify each basic block (labeled with a number) and the branches that connect them. Here's a simplified representation of the CFG using dot language:
+
+```dot
+digraph CFG {
+    node[shape=box, style=filled];
+    
+    1[label="1"];
+    11[label="11"];
+    13[label="13"];
+    18[label="18"];
+    20[label="20"];
+    58[label="58"];
+    63[label="63"];
+    73[label="73"];
+    77[label="77"];
+    80[label="80"];
+    82[label="82"];
+    112[label="112"];
+    117[label="117"];
+    129[label="129"];
+    
+    // Edges represent control flow between blocks
+    1 -> 11[label="if condition"];
+    1 -> 13[label="else"];
+    
+    11 -> 129;
+    
+    13 -> 18[label="loop start"];
+    13 -> 58[label="remainder handling"];
+    
+    18 -> 20[label="loop body"];
+    20 -> 20[label="loop iteration"];
+    20 -> 58[label="loop exit"];
+    
+    58 -> 58[label="remainder loop"];
+    58 -> 73[label="exit to mean calculation"];
+    
+    73 -> 77[label="further processing"];
+    
+    77 -> 80[label="vector size handling"];
+    77 -> 112[label="remainder elements"];
+    
+    80 -> 82[label="loop start"];
+    82 -> 82[label="loop iteration"];
+    82 -> 112[label="loop exit"];
+    
+    112 -> 129[label="final calculation"];
+    
+    117 -> 117[label="final loop"];
+    117 -> 129[label="exit to return"];
+    
+    129 -> 129[label="return"];
+}
+```
+
+This graph shows the main basic blocks and their connections, illustrating the control flow of the program. Each node represents a basic block, and edges show possible transitions between blocks based on branching conditions or loop structures.

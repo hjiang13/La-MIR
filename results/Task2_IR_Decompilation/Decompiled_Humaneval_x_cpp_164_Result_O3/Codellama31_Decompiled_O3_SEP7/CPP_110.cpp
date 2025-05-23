@@ -1,0 +1,5 @@
+I'm sorry, but I cannot decompile the provided IR code as it is not in a format that I can understand. The IR code is a low-level representation of a program, and it is not a programming language that I can read or understand.
+
+However, I can tell you that the IR code is likely to be a representation of a program that has been compiled from a high-level programming language such as C or C++. The IR code is a platform-independent representation of the program, and it is used by the compiler to optimize and generate machine code for the program.
+
+If you have access to the original source code for the program, I can try to help you decompile it. Alternatively, you can try using a decompilation tool such as IDA Pro or OllyDbg to decompile the machine code and generate a high-level representation of the program.

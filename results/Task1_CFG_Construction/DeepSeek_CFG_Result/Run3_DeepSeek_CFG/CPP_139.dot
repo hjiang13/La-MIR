@@ -1,0 +1,60 @@
+<think>
+Okay, I'm trying to figure out how to create a control flow graph (CFG) for the given IR code. The function is called _Z17special_factoriali and it's supposed to compute a special factorial. 
+
+First, I'll look at the structure of the IR code. The function starts with a comparison: it checks if the input %0 is less than 1. If true, it branches to label %28, else it goes to label %3. So the initial node is the entry point, and it branches to either the exit or to block %3.
+
+Block %3 seems to handle some setup. It computes %4 by adding 1 to %0, then converts it to i64 as %5. It then calculates %6 as %5 -1 and %7 as %5 -2. Then it computes %8 as %6 AND 7. After that, it checks if %7 is less than 7. If true, it goes to %12; else, it goes to %10.
+
+So from block %3, there are two edges: one to %12 and another to %10.
+
+Looking at block %10, it computes %11 as %6 AND -8, then branches to %30. So %10 only goes to %30.
+
+Block %30 is more complex. It has several phi nodes, which suggests it's a loop. The phi nodes collect values from different predecessors. Block %30 computes a bunch of multiplications and additions, incrementing some variables each time. It seems to be unrolling the factorial computation in steps. At the end, it checks if %59 (which is %34 -8) is zero. If yes, it goes to %12; otherwise, it loops back to %30.
+
+So block %30 has two edges: one back to itself and one to %12.
+
+Block %12 also has phi nodes, indicating it's another loop or a merge point. It checks if %8 is zero. If yes, it exits to %28; otherwise, it goes to %18.
+
+Block %18 is another loop. It updates several variables using phi nodes, performs multiplications and additions, increments, and checks if %26 is zero. If yes, it exits to %28; otherwise, it loops back to itself.
+
+Finally, block %28 is the exit point where the function returns the result.
+
+Putting this all together, the CFG starts at the entry, splits to %28 or %3, then navigates through %3 to either %12 or %10, which leads to %30. From %30, it can loop or go to %12. From %12, it can exit or go to %18, which loops until it exits.
+
+I need to represent this as a dot file, showing each block as a node and the edges between them based on the branches. Each node is labeled with its block number, and edges show the possible control flow paths.
+</think>
+
+Here's the control flow graph (CFG) for the provided IR code in dot file format:
+
+```dot
+digraph CFG {
+    node [shape=box, style=filled];
+
+    entry [label="entry"];
+    28 [label="28"];
+    3 [label="3"];
+    10 [label="10"];
+    30 [label="30"];
+    12 [label="12"];
+    18 [label="18"];
+
+    entry -> 28 [label="cond: %2 = icmp slt i32 %0, 1"];
+    entry -> 3 [label="br i1 %2, label %28, label %3"];
+
+    3 -> 12 [label="br i1 %9, label %12, label %10"];
+    3 -> 10 [label="br i1 %9, label %12, label %10"];
+
+    10 -> 30 [label="br label %30"];
+
+    30 -> 30 [label="br i1 %60, label %12, label %30"];
+    30 -> 12 [label="br i1 %60, label %12, label %30"];
+
+    12 -> 28 [label="br i1 %17, label %28, label %18"];
+    12 -> 18 [label="br i1 %17, label %28, label %18"];
+
+    18 -> 28 [label="br i1 %27, label %28, label %18"];
+    18 -> 18 [label="br i1 %27, label %28, label %18"];
+}
+```
+
+This dot file represents the control flow graph with nodes as basic blocks and edges as control flow transitions. Each edge is labeled with the condition or instruction causing the control flow. You can render this graph using tools like Graphviz to visualize the flow.

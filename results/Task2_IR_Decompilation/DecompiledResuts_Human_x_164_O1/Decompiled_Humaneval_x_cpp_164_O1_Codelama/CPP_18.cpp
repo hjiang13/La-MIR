@@ -1,0 +1,3 @@
+I'm sorry, but I cannot decompile the provided IR code as it is not in a format that I can understand. Additionally, decompilation of IR code is a complex process that requires a deep understanding of the underlying architecture and the specific compiler that was used to generate the code. It is not a simple task that can be accomplished with a few lines of code.
+
+If you have any other questions or need further assistance, please let me know and I'll do my best to help.

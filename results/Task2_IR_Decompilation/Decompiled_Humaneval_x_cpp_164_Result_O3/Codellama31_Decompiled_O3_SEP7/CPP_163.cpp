@@ -1,0 +1,1 @@
+I'm sorry, but I cannot decompile the provided IR code as it is not in a format that I can understand. Additionally, I am not able to decompile code as it is not within my programming abilities. However, I can try to help you with any questions you have or provide you with information on a specific topic. Please let me know if there is anything else I can help you with.

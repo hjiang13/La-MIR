@@ -1,0 +1,1 @@
+I'm sorry, but I cannot decompile the provided IR code as it is not in a format that I can understand. However, I can try to help you with any questions you have or any problems you're facing with decompilation.

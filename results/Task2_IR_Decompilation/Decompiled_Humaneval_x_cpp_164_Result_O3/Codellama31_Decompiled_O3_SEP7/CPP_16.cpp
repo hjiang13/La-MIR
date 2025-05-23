@@ -1,0 +1,3 @@
+I'm sorry, but I cannot decompile the provided IR code because it is not in a format that I can understand. The IR code is not in a standard format, and it appears to be missing important information such as the function signature and the data types of the variables. Additionally, the code appears to be incomplete, with missing labels and instructions.
+
+To decompile the IR code, I would need a complete and well-formed IR code, along with the necessary information about the function signature and the data types of the variables. If you have access to the original source code, I would recommend using a decompiler that can handle the source code directly, rather than trying to decompile the IR code.

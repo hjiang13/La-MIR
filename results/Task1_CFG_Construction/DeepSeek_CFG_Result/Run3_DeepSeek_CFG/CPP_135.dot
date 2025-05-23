@@ -1,0 +1,92 @@
+<think>
+Okay, so I've got this IR code, and I need to create a control flow graph (CFG) from it. I'm a bit new to this, but I'll try to break it down step by step.
+
+First, I remember that in IR, the code is divided into basic blocks, which are sequences of instructions without any branches or labels. Each basic block ends with a branch instruction. So, my first task is to identify all the basic blocks in the given code.
+
+Looking at the code, I see labels like 1, 10, 16, etc. Each of these labels marks the beginning of a basic block. So, each label corresponds to a node in the CFG. My job is to figure out how these nodes are connected based on the branch instructions.
+
+Starting from the top, the function begins at label 1. The first instruction after label 1 is a getelementptr, then some loads, and then a branch instruction: br i1 %9, label %36, label %10. This means that if %9 is true, it branches to label 36; otherwise, it goes to label 10. So, node 1 has two edges: one to node 36 and another to node 10.
+
+Next, looking at label 10, it ends with another branch: br i1 %15, label %18, label %16. So, node 10 connects to node 18 if %15 is true, otherwise to node 16.
+
+Label 16 ends with br label %38, meaning it jumps to node 38. So, node 16 has an edge to node 38.
+
+Label 18 has a phi instruction, which suggests it's a merge point. The branch at the end of this block is br i1 %22, label %36, label %23. So, node 18 connects to node 36 if %22 is true, else to node 23.
+
+Label 23 is a loop, as indicated by the !llvm.loop hint. It ends with br i1 %35, label %36, label %23. This means it either exits the loop to node 36 or loops back to itself.
+
+Label 36 is an exit point since it has a ret instruction. So, any node leading to 36 will terminate the function.
+
+Label 38 is another loop. It ends with br i1 %71, label %18, label %38. So, it either exits to node 18 or loops back to itself.
+
+Putting this all together, I can sketch out the nodes and their connections:
+
+- Node 1 branches to 36 and 10.
+- Node 10 branches to 18 and 16.
+- Node 16 goes to 38.
+- Node 18 goes to 36 and 23.
+- Node 23 loops back to itself and exits to 36.
+- Node 38 loops back to itself and exits to 18.
+- Node 36 is the exit.
+
+I think I might have missed some connections or mislabeled something, but this seems like the general structure. Maybe I should double-check each branch instruction to ensure all edges are correctly noted. Also, I should make sure that each node only appears once and that all possible paths are accounted for.
+
+I'm a bit confused about the phi instructions, but I think they just indicate that the block is a merge point, so the edges leading into it are from the possible predecessors. So, for node 18, the predecessors are node 10 and node 38, which I've accounted for.
+
+I'm also not entirely sure about the loops. Node 23 has a loop that can go back to itself, and node 38 loops back as well. I've included those edges, so that should be correct.
+
+Overall, I think I've covered all the branches and correctly mapped out the control flow. Now, I'll represent this as a dot file with nodes and edges.
+</think>
+
+To create the control flow graph (CFG) from the provided IR code, we first identify each basic block and their connections based on branch instructions. Here's the step-by-step breakdown:
+
+1. **Identify Basic Blocks**: Each label in the IR code represents the start of a basic block. The labels are 1, 10, 16, 18, 23, 36, and 38.
+
+2. **Determine Branches**: Examine the branch instructions at the end of each basic block to determine the flow of control.
+
+   - **Label 1**: Branches to 36 if true, else to 10.
+   - **Label 10**: Branches to 18 if true, else to 16.
+   - **Label 16**: Unconditionally branches to 38.
+   - **Label 18**: Branches to 36 if true, else to 23.
+   - **Label 23**: Loops back to itself if false, else exits to 36.
+   - **Label 36**: Exit point (ret instruction).
+   - **Label 38**: Loops back to itself if false, else exits to 18.
+
+3. **Construct the CFG**: Map each node (basic block) and its edges (branches) accordingly.
+
+Here's the resulting CFG in dot language:
+
+```dot
+digraph CFG {
+    node [shape=box, style=filled, color=lightblue];
+    
+    label_1 [label="1"];
+    label_10 [label="10"];
+    label_16 [label="16"];
+    label_18 [label="18"];
+    label_23 [label="23"];
+    label_36 [label="36"];
+    label_38 [label="38"];
+    
+    label_1 -> label_36 [label="true"];
+    label_1 -> label_10 [label="false"];
+    
+    label_10 -> label_18 [label="true"];
+    label_10 -> label_16 [label="false"];
+    
+    label_16 -> label_38;
+    
+    label_18 -> label_36 [label="true"];
+    label_18 -> label_23 [label="false"];
+    
+    label_23 -> label_36 [label="true"];
+    label_23 -> label_23 [label="false, loop"];
+    
+    label_38 -> label_18 [label="true"];
+    label_38 -> label_38 [label="false, loop"];
+    
+    label_36 [color=red]; // Exit node
+}
+```
+
+This graph shows the control flow between basic blocks, with edges labeled by their branch conditions. The exit node (36) is highlighted in red.

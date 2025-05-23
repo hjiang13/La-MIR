@@ -1,0 +1,156 @@
+<think>
+Okay, so I have to create a control flow graph (CFG) for the given IR code. I'm pretty new to this, so I'll take it step by step. 
+
+First, I need to understand what a CFG is. From what I know, a CFG is a graph representation of a program where each node represents a basic block of code, and edges represent the flow of control between these blocks. A basic block is a sequence of instructions that is executed sequentially without any branches or jumps.
+
+Looking at the IR code provided, it's a function called @_Z12get_positiveSt6vectorIfSaIfEE, which seems to be a C++ function that returns a vector. The code is in LLVM IR format, so I need to parse it and identify the basic blocks.
+
+I'll start by identifying the labels in the code. Each label marks the beginning of a basic block. Let me go through the code and list all the labels I see:
+
+- 2: This is the entry block.
+- 12: This block starts with %13 = phi float* [ %77, %76 ], [ %10, %2 ]
+- 22: Starts with %23 = icmp eq float* %17, %16
+- 24: Starts with store float %20, float* %17, align 4
+- 26: Starts with %27 = ptrtoint float* %16 to i64
+- 32: Invoke void @_ZSt20__throw_length_errorPKc(...)
+- 33: Unreachable
+- 34: Starts with %35 = icmp eq i64 %29, 0
+- 43: Starts with %44 = shl nuw nsw i64 %41, 2
+- 46: Starts with %47 = bitcast i8* %45 to float*
+- 49: Starts with %50 = phi float [ %48, %46 ], [ %20, %34 ]
+- 54: Starts with %55 = bitcast float* %51 to i8*
+- 57: Starts with %58 = getelementptr inbounds float, float* %52, i64 1
+- 60: Starts with %61 = bitcast float* %15 to i8*
+- 62: Starts with store float* %51, float** %7, align 8
+- 66: Landing pad for exceptions
+- 68: Another landing pad for exceptions
+- 70: Starts with %71 = phi { i8*, i32 } [ %67, %66 ], [ %69, %68 ]
+- 73: Starts with %74 = bitcast float* %15 to i8*
+- 75: Resume from exception
+- 76: Starts with %77 = phi float* [ %65, %62 ], [ %13, %24 ], [ %13, %12 ]
+- 88: The exit block, ret void
+
+Now, I'll note the transitions between these blocks by looking at the branch instructions. Each 'br' instruction will tell me the flow. Sometimes it's conditional, sometimes it's unconditional.
+
+Starting from the entry block 2:
+- Block 2 ends with br i1 %11, label %88, label %12. So, if condition %11 is true, it goes to 88 (exit), else to 12.
+
+Block 12 ends with br i1 %21, label %22, label %76. So, if %21 is true, go to 22, else to 76.
+
+Block 22 ends with br i1 %23, label %26, label %24. So, condition %23 true goes to 26, else to 24.
+
+Block 24 ends with br label %76. So, it goes back to 76.
+
+Block 26 has a few calculations and ends with br i1 %31, label %32, label %34. So, condition %31 true goes to 32, else to 34.
+
+Block 32 is an invoke, which can throw an exception, leading to landing pad 66 or 68, which both go to 70.
+
+Block 34 does some calculations and ends with br label %43. So, it goes to 43.
+
+Block 43 ends with a call to @Znwm, which can throw, leading to landing pad 66, then to 70. On success, it goes to 46.
+
+Block 46 ends with br label %49. So, to 49.
+
+Block 49 has two possible sources and ends with br i1 %53, label %54, label %57. So, condition %53 true goes to 54, else to 57.
+
+Block 54 ends with br label %57. So, to 57.
+
+Block 57 ends with br i1 %59, label %62, label %60. So, condition %59 true goes to 62, else to 60.
+
+Block 60 ends with br label %62. So, to 62.
+
+Block 62 ends with br label %76. So, back to 76.
+
+Block 66 and 68 both lead to 70.
+
+Block 70 does some cleanup and resumes with br label %75, which I think leads back to 62 or 76? Wait, in the code, block 75 is a resume, which I think just continues execution after handling the exception, probably leading back to 76.
+
+Block 76 ends with br i1 %87, label %12, label %88. So, condition %87 true loops back to 12, else exits to 88.
+
+Putting all these together, I can draw the edges between the blocks. Each block will be a node, and the 'br' instructions determine the edges.
+
+I also notice that some blocks are exception handling (like 66, 68, 70, 75) and some are function calls or invokes that can lead there.
+
+So, the main flow is from 2 -> 12 -> 22 -> 24 -> 76, and 2 -> 12 -> 22 -> 26 -> 32 (which is an error) or 34 -> 43 -> 46 -> 49 -> 54 -> 57 -> 60 -> 62 -> 76, and then 76 loops back to 12 or exits to 88.
+
+The exception handling blocks (66, 68, 70, 75) are connected from invokes that might throw, like 32 and 43.
+
+I think that's the general structure. Now, I'll represent this in a .dot file, showing each node as a label and edges as directed connections.
+</think>
+
+Here is the control flow graph represented in .dot format, showing the basic blocks as nodes and their connections as edges:
+
+```dot
+digraph CFG {
+    node[shape=box, style=filled, color=lightblue];
+    
+    // Nodes
+    start[label="2"];
+    bb12[label="12"];
+    bb22[label="22"];
+    bb24[label="24"];
+    bb26[label="26"];
+    bb32[label="32"];
+    bb34[label="34"];
+    bb43[label="43"];
+    bb46[label="46"];
+    bb49[label="49"];
+    bb54[label="54"];
+    bb57[label="57"];
+    bb60[label="60"];
+    bb62[label="62"];
+    bb66[label="66"];
+    bb68[label="68"];
+    bb70[label="70"];
+    bb75[label="75"];
+    bb76[label="76"];
+    end[label="88"];
+    
+    // Edges
+    start -> bb12[label="false"];
+    start -> end[label="true"];
+    
+    bb12 -> bb22[label="true"];
+    bb12 -> bb76[label="false"];
+    
+    bb22 -> bb26[label="true"];
+    bb22 -> bb24[label="false"];
+    
+    bb24 -> bb76;
+    
+    bb26 -> bb32[label="true"];
+    bb26 -> bb34[label="false"];
+    
+    bb32 -> bb66;
+    bb66 -> bb70;
+    
+    bb34 -> bb43;
+    bb43 -> bb46[label="normal"];
+    bb43 -> bb66[label="exception"];
+    
+    bb46 -> bb49;
+    
+    bb49 -> bb54[label="true"];
+    bb49 -> bb57[label="false"];
+    
+    bb54 -> bb57;
+    
+    bb57 -> bb62[label="true"];
+    bb57 -> bb60[label="false"];
+    
+    bb60 -> bb62;
+    
+    bb62 -> bb76;
+    
+    bb68 -> bb70;
+    
+    bb70 -> bb75;
+    
+    bb75 -> bb62;
+    
+    bb76 -> bb12[label="true"];
+    bb76 -> end[label="false"];
+}
+```
+
+This graph shows the control flow between the basic blocks of the given IR code. Each node represents a basic block, and edges indicate possible control flow paths between them. The labels on the edges indicate the conditions under which control flows from one block to another.

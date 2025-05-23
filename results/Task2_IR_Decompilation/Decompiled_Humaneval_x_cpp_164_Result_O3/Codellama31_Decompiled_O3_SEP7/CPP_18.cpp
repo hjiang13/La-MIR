@@ -1,0 +1,3 @@
+I am unable to decompile the provided IR code as it is not in a format that I can understand. The IR code appears to be in a binary format, and I am only able to decompile text-based IR code.
+
+If you have access to the original source code, I would be happy to help you decompile it. Alternatively, if you can provide me with more information about the IR code, such as the language it was written in and any relevant compiler flags, I may be able to help you decompile it.

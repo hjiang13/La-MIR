@@ -1,0 +1,98 @@
+#include <stdlib.h>
+
+struct std_vector {
+  void** _M_impl;
+};
+
+struct std_vector_base {
+  struct std_vector_base_impl* _M_impl_data;
+};
+
+struct std_vector_base_impl {
+  int* _M_start;
+  int* _M_finish;
+  int* _M_end_of_storage;
+};
+
+void factorizei(struct std_vector* result, int n) {
+  result->_M_impl = (void**)malloc(sizeof(struct std_vector_base));
+  struct std_vector_base* base = (struct std_vector_base*)result->_M_impl;
+  base->_M_impl_data = (struct std_vector_base_impl*)malloc(sizeof(struct std_vector_base_impl));
+  struct std_vector_base_impl* impl = base->_M_impl_data;
+  impl->_M_start = NULL;
+  impl->_M_finish = NULL;
+  impl->_M_end_of_storage = NULL;
+  if (n < 4) {
+    return;
+  }
+  int* p = NULL;
+  int* q = NULL;
+  int i = 2;
+  while (i * i <= n) {
+    if (n % i == 0) {
+      if (p == NULL) {
+        p = (int*)malloc(sizeof(int));
+        impl->_M_start = p;
+        impl->_M_finish = p;
+        impl->_M_end_of_storage = p + 1;
+      } else {
+        size_t size = impl->_M_finish - impl->_M_start;
+        size_t new_size = size * 2;
+        int* new_p = (int*)malloc(sizeof(int) * new_size);
+        for (int j = 0; j < size; j++) {
+          new_p[j] = impl->_M_start[j];
+        }
+        impl->_M_start = new_p;
+        impl->_M_finish = new_p + size;
+        impl->_M_end_of_storage = new_p + new_size;
+      }
+      *impl->_M_finish = i;
+      impl->_M_finish++;
+      n /= i;
+    } else {
+      i++;
+    }
+  }
+  if (n > 1) {
+    if (p == NULL) {
+      p = (int*)malloc(sizeof(int));
+      impl->_M_start = p;
+      impl->_M_finish = p;
+      impl->_M_end_of_storage = p + 1;
+    } else {
+      size_t size = impl->_M_finish - impl->_M_start;
+      size_t new_size = size + 1;
+      int* new_p = (int*)malloc(sizeof(int) * new_size);
+      for (int j = 0; j < size; j++) {
+        new_p[j] = impl->_M_start[j];
+      }
+      impl->_M_start = new_p;
+      impl->_M_finish = new_p + size;
+      impl->_M_end_of_storage = new_p + new_size;
+    }
+    *impl->_M_finish = n;
+    impl->_M_finish++;
+  }
+}
+
+
+#undef NDEBUG
+#include<assert.h>
+bool issame(vector<int> a,vector<int>b){
+    if (a.size()!=b.size()) return false;
+    for (int i=0;i<a.size();i++)
+    {
+        if (a[i]!=b[i]) return false;
+    }
+    return true;
+}
+int main(){
+    assert (issame(factorize(2) , {2}));
+    assert (issame(factorize(4) , {2, 2}));
+    assert (issame(factorize(8) , {2, 2, 2}));
+     assert (issame(factorize(3 * 19) , {3, 19}));
+    assert (issame(factorize(3 * 19 * 3 * 19) , {3, 3, 19, 19})); 
+    assert (issame(factorize(3 * 19 * 3 * 19 * 3 * 19) , {3, 3, 3, 19, 19, 19})); 
+    assert (issame(factorize(3 * 19 * 19 * 19) , {3, 19, 19, 19})); 
+    assert (issame(factorize(3 * 2 * 3) , {2, 3, 3}));
+}

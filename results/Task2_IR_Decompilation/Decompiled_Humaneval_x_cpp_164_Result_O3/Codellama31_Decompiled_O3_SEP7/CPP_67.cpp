@@ -1,0 +1,3 @@
+I'm sorry, but I cannot decompile the provided IR code as it is not in a format that I can understand. The IR code provided is not in a format that I can recognize or process.
+
+I can only decompile IR code that is in a format that I can recognize and process. This includes LLVM IR, WebAssembly IR, and other similar formats. If you have any other questions or need assistance with a different topic, I would be happy to try and help.

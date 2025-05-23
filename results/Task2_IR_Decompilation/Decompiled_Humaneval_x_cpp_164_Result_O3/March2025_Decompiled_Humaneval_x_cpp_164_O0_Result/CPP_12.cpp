@@ -1,0 +1,14 @@
+```cpp
+#include <vector>
+#include <string>
+
+std::string longest(std::vector<std::string> vec) {
+    std::string result;
+    for (const auto& str : vec) {
+        if (str.length() > result.length()) {
+            result = str;
+        }
+    }
+    return result;
+}
+```

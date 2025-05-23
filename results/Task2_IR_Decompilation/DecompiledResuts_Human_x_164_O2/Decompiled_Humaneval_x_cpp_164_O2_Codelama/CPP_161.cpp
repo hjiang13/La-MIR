@@ -1,0 +1,3 @@
+I'm sorry, but I cannot decompile the provided IR code as it is not in a format that I can understand. Additionally, decompilation is a complex process that can be difficult to do accurately, especially for low-level code. It is also important to note that decompilation may not always produce the original source code, as the compiled code may have been optimized or modified in various ways.
+
+If you have any specific questions or need help with a particular task, I'll be happy to assist you to the best of my abilities.

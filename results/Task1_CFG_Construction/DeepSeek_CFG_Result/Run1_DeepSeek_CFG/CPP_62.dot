@@ -1,0 +1,168 @@
+<think>
+Okay, I'm trying to figure out how to create a control flow graph (CFG) from the given IR code. First, I need to understand what a CFG is. From what I remember, a CFG represents the flow of control in a program, where each node is a basic block (a sequence of instructions without any branches), and edges represent possible control flow between these blocks.
+
+Looking at the IR code provided, it's a function named _Z10derivativeSt6vectorIfSaIfEE, which seems to be a vector derivative function. The code is in LLVM IR, so I need to parse it and identify the basic blocks.
+
+I'll start by scanning through the code to find all the labels, as each label typically marks the beginning of a basic block. Let's list them out:
+
+- The function starts without a label, so that's the entry block.
+- Label 16
+- Label 29
+- Label 31
+- Label 37
+- Label 38
+- Label 39
+- Label 48
+- Label 51
+- Label 53
+- Label 57
+- Label 60
+- Label 65
+- Label 69
+- Label 81
+- Label 83
+- Label 85
+- Label 88
+- Label 90
+- Label 91
+
+Each of these labels is a node in the CFG. Now, I need to determine the edges between these nodes by looking at the control flow instructions like branches and jumps.
+
+Starting from the entry block (implicitly before label 2, which is the first line after the function definition), there's a branch to label 16 or 91 based on the condition %15. So, the entry block has edges to 16 and 91.
+
+Next, looking at label 16, it has a phi instruction, which suggests it's a loop header since phi nodes are used in loop structures. The code then proceeds through several instructions and ends with a branch back to 16 or to 91, indicating a loop.
+
+From label 29, there's a branch to 69. So, 29 → 69.
+
+Label 31 has a couple of condition checks leading to labels 37, 39, and others. Specifically, after some calculations, there's a branch to 37 if the condition is met, else to 39. So, 31 → 37 and 31 → 39.
+
+Label 37 is a function call to throw an error, which is a noreturn function, leading to an unreachable block at 38. So, 37 → 38.
+
+Label 39 has more condition checks and calculations, leading to a possible allocation (label 48) or other branches. It seems to branch to 53 if certain conditions are met, so 39 → 53.
+
+Label 48 is an allocation call (malloc), which upon success goes to 51. So, 48 → 51.
+
+Label 51 then proceeds to 53, so 51 → 53.
+
+Label 53 has a conditional branch based on whether %34 is greater than 0, leading to 57 or 60. So, 53 → 57 and 53 → 60.
+
+Label 57 performs a memmove and then branches to 60. So, 57 → 60.
+
+Label 60 has a condition that branches to 65 if certain pointers are null, else to 63. So, 60 → 63 and 60 → 65.
+
+Label 63 calls a deallocation function and then goes to 65. So, 63 → 65.
+
+Label 65 updates some pointers and then branches back to 69. So, 65 → 69.
+
+Label 69 is a loop that updates some variables and loops back to 16 if the condition is met, otherwise it goes to 91. So, 69 → 16 and 69 → 91.
+
+Labels 81, 83, 85, 88, 90 seem to handle exceptions and cleanup. For example, after an allocation failure (81), it goes to 85, which then checks if there's an existing allocation to clean up (88) before resuming at 90, which then resumes the exception.
+
+Finally, label 91 is the exit block, returning void.
+
+Putting all these edges together, I can map out the CFG nodes and their connections, ensuring that each basic block is represented as a node and each control flow instruction as a directed edge between nodes.
+</think>
+
+To create the control flow graph (CFG) for the given IR code, each basic block is represented as a node, and edges are drawn based on control flow instructions. Here's the step-by-step breakdown:
+
+1. **Identify Basic Blocks**: Each label in the IR code represents the start of a basic block. The labels are: entry, 16, 29, 31, 37, 38, 39, 48, 51, 53, 57, 60, 65, 69, 81, 83, 85, 88, 90, 91.
+
+2. **Determine Control Flow**: Analyze branch, jump, and call instructions to determine the edges between nodes.
+
+3. **Construct the CFG**:
+   - **Entry** → 16, 91 (based on the initial branch)
+   - **16** → 16 (loop), 91 (exit loop)
+   - **29** → 69
+   - **31** → 37, 39
+   - **37** → 38
+   - **39** → 53
+   - **48** → 51
+   - **51** → 53
+   - **53** → 57, 60
+   - **57** → 60
+   - **60** → 63, 65
+   - **63** → 65
+   - **65** → 69
+   - **69** → 16, 91
+   - **81** → 85
+   - **83** → 85
+   - **85** → 88, 90
+   - **88** → 90
+   - **90** → (resumes exception handling)
+   - **91** → (function exit)
+
+Here is the CFG in dot language format:
+
+```dot
+digraph CFG {
+    node [shape=box, style=filled];
+    
+    entry [label="Entry"];
+    16 [label="16"];
+    29 [label="29"];
+    31 [label="31"];
+    37 [label="37"];
+    38 [label="38"];
+    39 [label="39"];
+    48 [label="48"];
+    51 [label="51"];
+    53 [label="53"];
+    57 [label="57"];
+    60 [label="60"];
+    65 [label="65"];
+    69 [label="69"];
+    81 [label="81"];
+    83 [label="83"];
+    85 [label="85"];
+    88 [label="88"];
+    90 [label="90"];
+    91 [label="91"];
+    
+    entry -> 16;
+    entry -> 91;
+    
+    16 -> 16 [label="loop"];
+    16 -> 91 [label="exit loop"];
+    
+    29 -> 69;
+    
+    31 -> 37;
+    31 -> 39;
+    
+    37 -> 38;
+    
+    39 -> 53;
+    
+    48 -> 51;
+    
+    51 -> 53;
+    
+    53 -> 57;
+    53 -> 60;
+    
+    57 -> 60;
+    
+    60 -> 63;
+    60 -> 65;
+    
+    63 -> 65;
+    
+    65 -> 69;
+    
+    69 -> 16;
+    69 -> 91;
+    
+    81 -> 85;
+    
+    83 -> 85;
+    
+    85 -> 88;
+    85 -> 90;
+    
+    88 -> 90;
+    
+    90 -> 90 [label="resume"];
+}
+```
+
+This CFG diagram shows all the basic blocks as nodes and the control flow between them as directed edges.

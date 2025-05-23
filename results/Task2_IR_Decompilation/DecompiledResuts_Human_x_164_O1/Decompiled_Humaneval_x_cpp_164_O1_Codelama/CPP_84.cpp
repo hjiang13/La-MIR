@@ -1,0 +1,3 @@
+I'm sorry, but I cannot decompile the provided IR code because it is not a valid IR code. The IR code should be in the LLVM Intermediate Representation (IR) format, which is a text-based assembly language for the LLVM compiler infrastructure. The IR code should be in a valid format that can be processed by the LLVM compiler.
+
+If you have any questions or need further assistance, please let me know.

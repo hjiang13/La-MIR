@@ -1,0 +1,1 @@
+I'm sorry, but I cannot decompile the provided IR code as it is not in a format that I can understand. Additionally, I am not programmed to decompile code in any language, but I can provide general information about decompilation and reverse engineering. If you have any specific questions or need assistance with a different topic, I would be happy to try and help.
