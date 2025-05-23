@@ -1,22 +1,22 @@
-# `La-MIR`: `La`rge `La`nguage `M`odels for `I`ntermediate `R`epresentation
+# LaMIR: Large Language Models for Intermediate Representation
 
 This repository contains the official implementation and evaluation framework for the ICML 2025 paper:
 
 **"Can Large Language Models Understand the Semantics of Intermediate Representation Code?"**
 
-**[📄 Paper Link](https://arxiv.org/abs/2502.06854)** | **[🖼️ Poster](./figures/poster.pdf)**
-
+[Paper Link](https://arxiv.org/abs/2502.06854) | [Poster](./figures/poster.pdf)
 
 ---
 
 ## 🔍 Overview
 
-La-MIR is a benchmarking framework to evaluate and analyze the ability of LLMs to understand compiler **Intermediate Representation (IR)**. It includes multiple tasks reflecting different levels of semantic understanding:
+LaMIR is a benchmarking framework to evaluate and analyze the ability of LLMs to understand compiler **Intermediate Representation (IR)**. It includes multiple tasks reflecting different levels of semantic understanding:
 
 * **CFG Reconstruction**
-* **IR Decompilation**
-* **Code Summarization**
+* **Call Graph Prediction**
+* **Data Dependence Graph (DDG) Analysis**
 * **Execution Reasoning**
+* **Behavior Consistency**
 
 The project provides all necessary IR datasets, task prompts, expected outputs, baseline results, and analysis tools.
 
@@ -25,17 +25,18 @@ The project provides all necessary IR datasets, task prompts, expected outputs, 
 ## 🗂️ Repository Structure
 
 ```
-La-MIR/
+LaMIR/
 ├── src/                    # Core source code (prompt generation, task evaluation)
 │   ├── model/              # LLM interfaces & wrappers
-│   ├── data/               # IR processing and annotation
-│   ├── utils/              # Shared utilities
-│   └── main.py             # Entry point for evaluation
+│   ├── tasks/              # Implementations of each evaluation task (T1~T4)
+│   ├── data/               # IR preprocessing, slicing, labeling
+│   ├── utils/              # Shared utilities (e.g., IO, parsing)
+│   └── main.py             # Entry point for launching evaluation
 ├── configs/                # Task configurations and LLM settings
-├── scripts/                # Shell scripts for quick run
+├── scripts/                # Shell scripts for running experiments
 │   ├── run_all.sh
 │   └── run_task.sh
-├── results/                # Output predictions, scores, figures
+├── results/                # Output predictions, performance reports
 ├── figures/                # Figures from the paper
 ├── docs/                   # Reproducibility, task definitions
 │   └── reproducibility.md
@@ -71,12 +72,12 @@ cat results/summary.csv
 
 ## 📊 Tasks
 
-| Task                | Description                                    |
-| ------------------- | ---------------------------------------------- |
-| CFG Reconstruction  | Predict basic blocks and control flow edges    |
-| Call Graph          | Identify caller-callee relationships           |
-| DDG Analysis        | Capture data dependencies between instructions |
-| Execution Reasoning | Predict IR output given an input               |
+| Task                         | Description                                                                                 |
+| ---------------------------- | ------------------------------------------------------------------------------------------- |
+| **T1: CFG Construction**     | Given IR, reconstruct its Control Flow Graph by identifying basic blocks and control edges. |
+| **T2: IR Decompilation**     | Translate IR back into natural-language-like statements that reflect its semantics.         |
+| **T3: Execution Reasoning**  | Simulate IR execution given inputs and predict the output values.                           |
+| **T4: Behavior Consistency** | Judge whether two IRs exhibit the same behavior (semantics-preserving transformations).     |
 
 Each task is described in detail in [`docs/reproducibility.md`](docs/reproducibility.md).
 
@@ -91,10 +92,10 @@ This project is licensed under the [MIT License](LICENSE).
 ## 🙋 Citation
 
 ```bibtex
-@article{jiang2025LaMIR,
-  title={Can Large Language Models Understand Intermediate Representations?},
-  author={Jiang, Hailong and Zhu, Jianfeng and Wan, Yao and Fang, Bo and Zhang, Hongyu and Jin, Ruoming and Guan, Qiang},
-  journal={arXiv preprint arXiv:2502.06854},
+@inproceedings{jiang2025lamir,
+  title={Can Large Language Models Understand the Semantics of Intermediate Representation Code?},
+  author={Jiang, Hailong and et al.},
+  booktitle={International Conference on Machine Learning (ICML)},
   year={2025}
 }
 ```
