@@ -1,3 +1,4 @@
+![logo](./docs/figures/LaMIR_logo.drawio.png)
 # LaMIR: Large Language Models for Intermediate Representation
 
 This repository contains the official implementation and evaluation framework for the ICML 2025 paper:
