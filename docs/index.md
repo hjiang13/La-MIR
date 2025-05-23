@@ -12,6 +12,8 @@ title: LaMIR: Can LLMs Understand Intermediate Representations?
 
 ## 📌 Project Overview
 
+![logo](./figures/LaMIR_logo.drawio.png)
+
 **LaMIR** is the first comprehensive benchmark to evaluate whether Large Language Models (LLMs) can understand compiler Intermediate Representations (IRs). We assess six state-of-the-art LLMs 
 - GPT-4
 - GPT-3.5
