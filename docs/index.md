@@ -1,8 +1,8 @@
 ---
-title: LaMIR: Understanding IR with LLMs
+title: LaMIR: Can LLMs Understand Intermediate Representations?
 ---
 
-# 🧠 LaMIR: Understanding Intermediate Representation with LLMs
+# 🧠 LaMIR: Can Large Language Models Understand Intermediate Representations?
 
 📄 [Read the Paper](https://arxiv.org/abs/2502.06854)  
 🎓 Presented at ICML 2025  
@@ -10,22 +10,57 @@ title: LaMIR: Understanding IR with LLMs
 
 ---
 
-## 🔍 What is LaMIR?
+## 📌 Project Overview
 
-**LaMIR** is a benchmark designed to evaluate whether large language models (LLMs) can understand the semantics of compiler intermediate representations (IR). It introduces four structured tasks targeting control flow, semantic generation, execution reasoning, and behavioral equivalence.
+**LaMIR** is the first comprehensive benchmark to evaluate whether Large Language Models (LLMs) can understand compiler Intermediate Representations (IRs). We assess six state-of-the-art LLMs 
+- GPT-4
+- GPT-3.5
+- DeepSeek 
+- Gemma 2
+- LLaMA 3.1 
+- Code Llama
+
+across four core IR tasks:
+
+- Structural reasoning (CFGs),
+- Syntactic transformation (decompilation),
+- Semantic abstraction (summarization),
+- Execution behavior analysis (assertion prediction).
+
+We highlight persistent limitations in control flow modeling, semantic fidelity, and loop handling—offering key insights for building IR-aware language models.
+
+---
+## 🔍 Study Design Overview
+
+![Study Overview](./figures/study_design_overview.png)
+
+The figure above illustrates the overall design of our benchmark framework. We evaluate LLMs on four core tasks that capture different aspects of IR comprehension:
+
+- **Task 1 – Structural Understanding:** Reconstruct the control flow graph (CFG) from IR, assessing models’ ability to infer branching logic and loop structures.
+- **Task 2 – Syntactic Comprehension:** Decompile IRs into high-level C/C++ code, measuring syntactic translation fidelity and re-executability.
+- **Task 3 – Semantic Comprehension:** Summarize IR functions using natural language, focusing on semantic abstraction of input/output behavior.
+- **Task 4 – Execution Reasoning:** Predict whether assertion statements hold based on static IR execution, revealing a model’s reasoning depth.
+
+Each task is formulated with carefully crafted prompts, grounded evaluation metrics, and multi-level compiler optimizations to challenge and quantify LLMs’ capacity to reason over IRs.
 
 ---
 
-## 📊 Evaluation Results
+## 📋 Tasks Overview
 
-| Model      | T1: CFG (%) | T2: Decomp (%) | T3: Exec (%) | T4: Consistency (%) |
-|------------|-------------|----------------|--------------|---------------------|
-| GPT-4      | 52.3        | 45.6           | 71.2         | 63.8                |
-| DeepSeek   | 48.9        | 43.2           | 69.0         | 60.1                |
-| Claude     | 44.7        | 41.8           | 66.3         | 58.4                |
+Explore each benchmark task in detail:
 
-📘 [View Task Details](./tasks.md)  
-📈 [See Full Results](./results.md)
+- 🔗 [Task 1: CFG Construction](./task1_cfg.md)  
+  Reconstruct the **control flow graph (CFG)** from IR by identifying basic blocks and control edges.
+
+- 🔗 [Task 2: IR Decompilation](./task2_decomp.md)  
+  Translate IR into high-level **C/C++ source code**, assessing syntactic understanding via re-execution.
+
+- 🔗 [Task 3: IR Summarization](./task3_sum.md)  
+  Generate **natural language summaries** of IR functions, focusing on their purpose, inputs, and outputs.
+
+- 🔗 [Task 4: Execution Reasoning](./task4_exec.md)  
+  Predict **which assertion statements will pass or fail** by statically simulating IR-based program behavior.
+
 
 ---
 
